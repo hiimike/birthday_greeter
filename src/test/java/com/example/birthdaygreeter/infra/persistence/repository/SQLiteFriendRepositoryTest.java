@@ -3,6 +3,7 @@ package com.example.birthdaygreeter.infra.persistence.repository;
 import com.example.birthdaygreeter.domain.friend.Friend;
 import com.example.birthdaygreeter.fixture.entity.FriendEntityFixture;
 import com.example.birthdaygreeter.infra.persistence.entity.FriendEntity;
+import com.example.birthdaygreeter.util.DateUtils;
 import net.datafaker.Faker;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,8 @@ public class SQLiteFriendRepositoryTest {
     public void findFriendsWithBirthdateToday_ShouldReturnCorrectNumberOfFriends() {
         LocalDate today = LocalDate.now();
         List<FriendEntity> friendEntities = List.of(FriendEntityFixture.withBirthdayToday());
-        Mockito.when(friendJPARepository.findFriendsWithBirthdateToday(today))
+        List<Integer> days = DateUtils.getAdjustDays(today);
+        Mockito.when(friendJPARepository.findFriendsWithBirthdateToday(today, days))
                 .thenReturn(friendEntities);
 
         List<Friend> friends = sqLiteFriendRepository.findFriendsWithBirthdateToday(today);
@@ -52,7 +54,7 @@ public class SQLiteFriendRepositoryTest {
         assertEquals(friendEntities.get(0).getLastName(), friends.get(0).getLastName());
         assertEquals(friendEntities.get(0).getEmail(), friends.get(0).getEmail());
         assertEquals(friendEntities.get(0).getDateOfBirth(), friends.get(0).getDateOfBirth());
-        Mockito.verify(friendJPARepository, Mockito.times(1)).findFriendsWithBirthdateToday(eq(today));
+        Mockito.verify(friendJPARepository, Mockito.times(1)).findFriendsWithBirthdateToday(eq(today), eq(days));
     }
 
     @Test

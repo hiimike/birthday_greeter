@@ -3,6 +3,7 @@ package com.example.birthdaygreeter.infra.persistence.repository;
 import com.example.birthdaygreeter.domain.friend.Friend;
 import com.example.birthdaygreeter.domain.friend.FriendRepository;
 import com.example.birthdaygreeter.infra.persistence.entity.FriendEntity;
+import com.example.birthdaygreeter.util.DateUtils;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -20,7 +21,8 @@ public class SQLiteFriendRepository implements FriendRepository {
 
     @Override
     public List<Friend> findFriendsWithBirthdateToday(LocalDate today) {
-        return toDomain(friendJPARepository.findFriendsWithBirthdateToday(today));
+        List<Integer> days = DateUtils.getAdjustDays(today);
+        return toDomain(friendJPARepository.findFriendsWithBirthdateToday(today, days));
     }
 
     @Override

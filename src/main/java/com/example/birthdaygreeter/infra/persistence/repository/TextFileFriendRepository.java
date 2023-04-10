@@ -3,6 +3,7 @@ package com.example.birthdaygreeter.infra.persistence.repository;
 import com.example.birthdaygreeter.domain.friend.Friend;
 import com.example.birthdaygreeter.domain.friend.FriendRepository;
 import com.example.birthdaygreeter.infra.internal.InvalidDateOfBirthException;
+import com.example.birthdaygreeter.util.DateUtils;
 import com.example.birthdaygreeter.util.DateValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -24,8 +25,8 @@ public class TextFileFriendRepository implements FriendRepository {
     @Override
     public List<Friend> findFriendsWithBirthdateToday(LocalDate today) {
         return findAll().stream()
-                .filter(friend -> friend.getDateOfBirth().getMonth() == today.getMonth()
-                        && friend.getDateOfBirth().getDayOfMonth() == today.getDayOfMonth()
+                .filter(friend -> friend.getDateOfBirth().getMonthValue() == today.getMonthValue()
+                        && DateUtils.adjustBirthdate(friend.getDateOfBirth()).getDayOfMonth() == today.getDayOfMonth()
                 )
                 .toList();
     }

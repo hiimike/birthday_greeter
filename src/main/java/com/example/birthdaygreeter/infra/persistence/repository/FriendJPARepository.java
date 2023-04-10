@@ -10,8 +10,8 @@ import java.util.List;
 
 @Repository()
 public interface FriendJPARepository extends JpaRepository<FriendEntity, String> {
-    @Query("SELECT f FROM FriendEntity f WHERE MONTH(f.dateOfBirth) = MONTH(:today) AND DAY(f.dateOfBirth) = DAY(:today)")
-    List<FriendEntity> findFriendsWithBirthdateToday(LocalDate today);
+    @Query("SELECT f FROM FriendEntity f WHERE MONTH(f.dateOfBirth) = MONTH(:today) AND function('strftime', '%d', f.dateOfBirth) IN(:days)")
+    List<FriendEntity> findFriendsWithBirthdateToday(LocalDate today, List<Integer> days);
 
     List<FriendEntity> findFriendByEmailNotIn(List<String> ids);
 }

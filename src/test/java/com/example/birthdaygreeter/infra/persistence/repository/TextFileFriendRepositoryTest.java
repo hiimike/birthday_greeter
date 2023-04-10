@@ -80,8 +80,26 @@ public class TextFileFriendRepositoryTest {
         assertEquals(10, friends.size());
     }
 
+    @Test
+    public void findFriendsWithAdjustedBirthdateToday() throws IOException {
+        FriendEntity feb29Friend = FriendEntityFixture.random();
+        LocalDate feb29 = LocalDate.of(2020, 2, 29);
+        feb29Friend.setDateOfBirth(feb29);
+        addFriendToFile(feb29Friend);
+
+        LocalDate todayFeb28 = LocalDate.of(2023, 2, 28);
+        List<Friend> friends = textFileFriendRepository.findFriendsWithBirthdateToday(todayFeb28);
+
+        assertEquals(1, friends.size(), "Expected 1 friend with birthdays on February 28th");
+    }
+
     private FriendEntity addFriendWithBirthdayAsToday() throws IOException {
         FriendEntity friendEntity = FriendEntityFixture.withBirthdayToday();
+        addFriendToFile(friendEntity);
+        return friendEntity;
+    }
+
+    private void addFriendToFile(FriendEntity friendEntity) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
             bw.write(String.format("%s %s %s %s%n",
                     friendEntity.getLastName(),
@@ -89,7 +107,6 @@ public class TextFileFriendRepositoryTest {
                     friendEntity.getDateOfBirth().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
                     friendEntity.getEmail()));
         }
-        return friendEntity;
     }
 
 }
